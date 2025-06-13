@@ -1,0 +1,9 @@
+# .gitignore
+bin/
+obj/
+.vscode/
+*.user
+*.db
+.env
+.env.*
+appsettings.Development.json
