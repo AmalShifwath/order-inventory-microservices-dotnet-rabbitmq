@@ -1,60 +1,30 @@
-# Order & Inventory Microservices System
+# Order & Inventory Microservices Application (C# .NET + RabbitMQ)
 
-## Overview
-This project is an Order & Inventory Microservices System built using .NET and RabbitMQ. It follows a 3-tier architecture, separating concerns into different services for better scalability and maintainability.
+This project demonstrates an event-driven microservices architecture using **.NET Core**, **RabbitMQ**, and **Docker**. It simulates a real-world backend system. It follows a 3-tier architecture with decoupled services for **Order Management** and **Inventory Tracking**, communicating asynchronously through message queues.
 
-## Architecture
-The system consists of two main microservices:
-- **Order Service**: Manages order-related operations such as creating, updating, and retrieving orders.
-- **Inventory Service**: Manages inventory-related operations such as adding, updating, and retrieving inventory items.
+---
 
-Both services communicate with each other through RabbitMQ for event-driven messaging.
+## Architecture Overview
 
-## Project Structure
-```
-order-inventory-microservices
-├── OrderService
-│   ├── src
-│   ├── OrderService.csproj
-│   ├── appsettings.json
-│   └── appsettings.Development.json
-├── InventoryService
-│   ├── src
-│   ├── InventoryService.csproj
-│   ├── appsettings.json
-│   └── appsettings.Development.json
-├── Shared
-│   ├── Models
-│   └── Messaging
-├── docker-compose.yml
-└── README.md
-```
+- **OrderService**: Handles order creation and emits events
+- **InventoryService**: Listens for order events and updates stock levels accordingly
+- **CustomerService**: Manages customer data and emits customer-related events
+- **RabbitMQ**: Message broker to decouple services and enable asynchronous event communication
+- **Shared**: Contains common message/event contracts and RabbitMQ utility services
+- **CustomerPortal**: Frontend MVC web app for customers to place and view orders
+- **InventoryPortal**: Frontend MVC web app for inventory managers to monitor and update stock
 
-## Setup Instructions
-1. **Clone the Repository**
-   ```
-   git clone <repository-url>
-   cd order-inventory-microservices
-   ```
+Each microservice and portal is independently deployable. Backend services communicate via events, and frontends consume backend APIs. The system follows **event-driven architecture** and **domain-driven design** principles.
 
-2. **Docker Setup**
-   Ensure you have Docker installed. Use the following command to start the services:
-   ```
-   docker-compose up
-   ```
+---
 
-3. **Run the Services**
-   Each service can be run independently. Navigate to the respective service directory and run:
-   ```
-   dotnet run
-   ```
+## Tech Stack
 
-## Usage
-- **Order Service**: Access the Order Service API at `http://localhost:<port>/api/orders`.
-- **Inventory Service**: Access the Inventory Service API at `http://localhost:<port>/api/inventory`.
+- **.NET 7 / ASP.NET Core Web API**
+- **Entity Framework Core**
+- **RabbitMQ** (message broker)
+- **Docker + Docker Compose**
+- **PostgreSQL** (for service persistence, optional)
+- **Postman / Swagger** (for testing APIs)
 
-## Contributing
-Feel free to submit issues or pull requests for improvements or bug fixes.
-
-## License
-This project is licensed under the MIT License.
+---
