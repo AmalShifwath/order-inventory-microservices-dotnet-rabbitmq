@@ -1,19 +1,51 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Models;
 using OrderService.Services;
+using Microsoft.EntityFrameworkCore; // for ToListAsync()
 
 namespace OrderService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
+        private readonly CustomerDbContext _context;
 
         public OrderController(OrderService orderService)
         {
             _orderService = orderService;
         }
+
+        public OrderController(CustomerDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]
+        public async Task PostCustomer(CustomerModel Customer)
+        {
+            _context.Customers.Add(Customer);
+            await _context.SaveChanegesAsync();
+        }
+    
+        [HttpGet]
+        [Route("customers")] // Get all customers
+        public async Task<IActionResult> GetCustomers()
+        {
+            var customers = await _context.Customers.ToListAsync();
+            return customers;
+        }
+
+        [HttpGet]
+        [Route("orders")] // Get all products
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _context.Orders.ToListAsync();
+            return orders;
+        }
+
+
 
         [HttpPost]
         [Route("create")]
