@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using OrderService.Models;
 using OrderService.Services;
 using Microsoft.EntityFrameworkCore; // for ToListAsync()
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace OrderService.Controllers
 {
@@ -9,10 +11,10 @@ namespace OrderService.Controllers
     [Route("[controller]")]
     public class OrderController : ControllerBase
     {
-        private readonly OrderService _orderService;
+        private readonly OrderServices _orderService;
         private readonly CustomerDbContext _context;
 
-        public OrderController(OrderService orderService)
+        public OrderController(OrderServices orderService)
         {
             _orderService = orderService;
         }
@@ -26,20 +28,28 @@ namespace OrderService.Controllers
         public async Task PostCustomer(CustomerModel Customer)
         {
             _context.Customers.Add(Customer);
-            await _context.SaveChanegesAsync();
+            await _context.SaveChangesAsync();
         }
     
         [HttpGet]
         [Route("customers")] // Get all customers
-        public async Task<IActionResult> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetCustomers()
         {
             var customers = await _context.Customers.ToListAsync();
             return customers;
         }
 
+         [HttpGet]
+        [Route("products")] // Get all products
+        public async Task<ActionResult<IEnumerable<ProductModel>>> GetProducts()
+        {
+            var products = await _context.Products.ToListAsync();
+            return products;
+        }
+
         [HttpGet]
         [Route("orders")] // Get all products
-        public async Task<IActionResult> GetOrders()
+        public async Task<ActionResult<IEnumerable<OrderModel>>> GetOrders()
         {
             var orders = await _context.Orders.ToListAsync();
             return orders;
@@ -47,41 +57,40 @@ namespace OrderService.Controllers
 
 
 
-        [HttpPost]
-        [Route("create")]
-        public IActionResult CreateOrder([FromBody] OrderModel order)
-        {
-            var result = _orderService.PlaceOrder(order);
-            return CreatedAtAction(nameof(GetOrder), new { id = result.OrderId }, result);
-        }
+        // [HttpPost]
+        // [Route("create")]
+        // public IActionResult CreateOrder([FromBody] OrderModel order)
+        // {
+            
+        // }
 
-        [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetOrder(int id)
-        {
-            var order = _orderService.GetOrderDetails(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return Ok(order);
-        }
+        // [HttpGet]
+        // [Route("{id}")]
+        // public IActionResult GetOrder(int id)
+        // {
+        //     var order = _orderService.GetOrderDetails(id);
+        //     if (order == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     return Ok(order);
+        // }
 
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult UpdateOrder(int id, [FromBody] OrderModel order)
-        {
-            if (id != order.OrderId)
-            {
-                return BadRequest();
-            }
+        // [HttpPut]
+        // [Route("{id}")]
+        // public IActionResult UpdateOrder(int id, [FromBody] OrderModel order)
+        // {
+        //     if (id != order.OrderId)
+        //     {
+        //         return BadRequest();
+        //     }
 
-            var updatedOrder = _orderService.UpdateOrder(order);
-            if (updatedOrder == null)
-            {
-                return NotFound();
-            }
-            return Ok(updatedOrder);
-        }
+        //     var updatedOrder = _orderService.UpdateOrder(order);
+        //     if (updatedOrder == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     return Ok(updatedOrder);
+        // }
     }
 }

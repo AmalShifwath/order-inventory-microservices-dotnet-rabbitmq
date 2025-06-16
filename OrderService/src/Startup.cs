@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OrderService.Services;
-using OrderService.Messaging;
+// using OrderService.Messaging; // Removed as Messaging namespace is missing
 
 namespace OrderService
 {
@@ -20,9 +20,9 @@ namespace OrderService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<OrderService>();
-            services.AddSingleton<RabbitMqPublisher>();
-            services.AddSingleton<RabbitMqSubscriber>();
+            services.AddScoped<OrderServices>();
+            // services.AddSingleton<RabbitMqPublisher>();
+            // services.AddSingleton<RabbitMqSubscriber>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
