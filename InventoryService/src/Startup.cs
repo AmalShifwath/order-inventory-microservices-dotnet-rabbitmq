@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using InventoryService.Services;
 
 public class Startup
 {
@@ -8,9 +9,9 @@ public class Startup
         // Add services to the container.
         services.AddControllers();
         // Register your InventoryService and RabbitMQ services here
-        services.AddScoped<InventoryService>();
-        services.AddSingleton<RabbitMqPublisher>();
-        services.AddSingleton<RabbitMqSubscriber>();
+        services.AddScoped<InventoryServices>();
+        // services.AddSingleton<RabbitMqPublisher>();
+        // services.AddSingleton<RabbitMqSubscriber>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

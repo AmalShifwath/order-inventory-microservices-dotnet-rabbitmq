@@ -8,39 +8,41 @@ using System.Collections.Generic;
 namespace OrderService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class OrderController : ControllerBase
+    [Route("[controller]/")]
+      public class OrderController : ControllerBase
     {
         private readonly OrderServices _orderService;
         private readonly CustomerDbContext _context;
 
-        public OrderController(OrderServices orderService)
+        // public OrderController(OrderServices orderService)
+        // {
+        //     _orderService = orderService;
+        // }
+
+        public OrderController(CustomerDbContext context, OrderServices orderService)
         {
             _orderService = orderService;
-        }
-
-        public OrderController(CustomerDbContext context)
-        {
             _context = context;
         }
 
         [HttpPost]
-        public async Task PostCustomer(CustomerModel Customer)
+        public async Task<IActionResult> PostCustomer([FromBody] CustomerModel Customer)
         {
             _context.Customers.Add(Customer);
             await _context.SaveChangesAsync();
+            return CreatedAtAction(Customer.Name, Customer);
         }
     
         [HttpGet]
-        [Route("customers")] // Get all customers
+        [Route("/customers")] // Get all customers
         public async Task<ActionResult<IEnumerable<CustomerModel>>> GetCustomers()
         {
             var customers = await _context.Customers.ToListAsync();
             return customers;
         }
 
-         [HttpGet]
-        [Route("products")] // Get all products
+        [HttpGet]
+        [Route("/products")] // Get all products
         public async Task<ActionResult<IEnumerable<ProductModel>>> GetProducts()
         {
             var products = await _context.Products.ToListAsync();
@@ -48,7 +50,7 @@ namespace OrderService.Controllers
         }
 
         [HttpGet]
-        [Route("orders")] // Get all products
+        [Route("/orders")] // Get all products
         public async Task<ActionResult<IEnumerable<OrderModel>>> GetOrders()
         {
             var orders = await _context.Orders.ToListAsync();
