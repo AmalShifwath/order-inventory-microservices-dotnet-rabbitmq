@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OrderService.Models;
+using OrderService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<CustomerDbContext>(options =>
     options.UseSqlite(@"Data Source=Customers.db"));
 
+builder.Services.AddScoped<OrderServices>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -20,14 +22,19 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<CustomerDbContext>();
-    db.Database.EnsureCreated();
+    // db.Database.EnsureCreated();
+    db.Database.Migrate(); // applies all pending migrations
 
     app.UseSwagger();
     app.UseSwaggerUI();
-    Console.WriteLine("Swagger should be available at: http://localhost:5000/swagger");
+    Console.WriteLine("Swagger should be available at: https://localhost:5000/swagger");
 }
 
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
+
 // using Microsoft.AspNetCore.Hosting;
 // using Microsoft.Extensions.Hosting;
 

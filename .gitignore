@@ -7,3 +7,6 @@ obj/
 .env
 .env.*
 appsettings.Development.json
+*.db
+*.db-wal
+*.db-shm

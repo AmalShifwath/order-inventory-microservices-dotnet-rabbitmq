@@ -1,4 +1,4 @@
-namespace OrderService.Models;
+namespace InventoryService.Models;
 
 public class ProductModel
 {
