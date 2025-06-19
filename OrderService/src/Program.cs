@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderService.Models;
 using OrderService.Services;
+using OrderService.Messaing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,18 @@ builder.Services.AddDbContext<CustomerDbContext>(options =>
     options.UseSqlite(@"Data Source=Customers.db"));
 
 builder.Services.AddScoped<OrderServices>();
+builder.Services.AddSingleton<IRabbitMqUtil, RabbitMqUtil>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var rabbitUtil = scope.ServiceProvider.GetRequiredService<IRabbitMqUtil>();
+    _ = Task.Run(() => rabbitUtil.consumeMessageQueue("inventory.product"));
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

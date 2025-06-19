@@ -28,7 +28,7 @@ public class RabbitMqUtil : IRabbitMqUtil
             body: body
         );
 
-        Console.WriteLine($"--> Published message to exchange [trigger]: {eventData}");
+        Console.WriteLine($"--> Published message to exchange with routing key: {routingKey} [trigger]: {eventData}");
 
         await Task.CompletedTask;
     }
